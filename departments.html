@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Departments – Best PU & Degree College</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:      #0d1b3e;
+      --navy-mid:  #162550;
+      --grey-bg:   #e8eaef;
+      --grey-lt:   #f0f2f6;
+      --grey-card: #f4f5f8;
+      --grey-tab:  #eceef3;
+      --border:    #d0d7e8;
+      --accent-1:  #e91e8c;
+      --accent-2:  #f0a500;
+      --accent-3:  #00b4d8;
+      --accent-4:  #3a86ff;
+      --accent-5:  #6dbe45;
+      --white:     #ffffff;
+      --text:      #0d1b3e;
+      --sub:       #3d4f72;
+      --dark-card: #2e3f5c;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Source Sans 3',sans-serif;background:var(--grey-bg);color:var(--text);min-height:100vh;}
+
+    .page{display:none;width:100%;min-height:100vh;}
+    .page.active{display:block;}
+
+    /* ── PAGE 1 – DEPARTMENTS LIST ── */
+    #pg-depts{background:var(--grey-bg);padding:56px 20px 72px;}
+    .dept-heading-wrap{margin-bottom:36px;}
+    .dept-heading-wrap h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;color:var(--navy);}
+    .rainbow-bar{margin-top:8px;height:5px;width:130px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));}
+    .dept-grid{display:grid;grid-template-columns:1fr;gap:16px;max-width:700px;margin:0 auto;}
+    .dept-card{background:var(--grey-card);border-radius:14px;border:2.5px solid var(--border);border-left-width:5px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:transform .2s,box-shadow .2s;opacity:0;animation:slideUp .5s ease forwards;}
+    .dept-card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(13,27,62,.13);background:var(--white);}
+    .dept-card[data-a="cyan"]{border-left-color:var(--accent-3);}
+    .dept-card[data-a="gold"]{border-left-color:var(--accent-2);}
+    .dept-card[data-a="blue"]{border-left-color:var(--accent-4);}
+    .dept-card[data-a="green"]{border-left-color:var(--accent-5);}
+    .dept-card:nth-child(1){animation-delay:.05s;}.dept-card:nth-child(2){animation-delay:.12s;}.dept-card:nth-child(3){animation-delay:.19s;}.dept-card:nth-child(4){animation-delay:.26s;}
+    .dc-body{display:flex;align-items:center;gap:16px;}
+    .dc-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .dept-card[data-a="cyan"] .dc-icon{background:#d0f4fb;}
+    .dept-card[data-a="gold"] .dc-icon{background:#fef3d0;}
+    .dept-card[data-a="blue"] .dc-icon{background:#d5e6ff;}
+    .dept-card[data-a="green"] .dc-icon{background:#dcf5cc;}
+    .dc-label{font-family:'Rajdhani',sans-serif;font-size:clamp(1rem,3.5vw,1.2rem);font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--navy);}
+    .dc-arrow{font-size:1.2rem;color:var(--border);transition:color .2s,transform .2s;}
+    .dept-card:hover .dc-arrow{transform:translateX(5px);}
+    .dept-card[data-a="cyan"]:hover .dc-arrow{color:var(--accent-3);}
+    .dept-card[data-a="gold"]:hover .dc-arrow{color:var(--accent-2);}
+    .dept-card[data-a="blue"]:hover .dc-arrow{color:var(--accent-4);}
+    .dept-card[data-a="green"]:hover .dc-arrow{color:var(--accent-5);}
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+    /* ── SHARED BACK BTN ── */
+    .back-btn{display:inline-flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;color:var(--sub);font-family:inherit;font-size:.9rem;font-weight:600;padding:14px 20px;transition:color .2s;}
+    .back-btn:hover{color:var(--navy);}
+
+    /* ── HERO (department + course) ── */
+    .dept-hero,.course-hero{padding:48px 24px 42px;position:relative;overflow:hidden;}
+    .dept-hero{background:linear-gradient(135deg,var(--navy) 0%,var(--dark-card) 100%);}
+    .dept-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(0,180,216,.15),transparent 60%);}
+    .course-hero{background:linear-gradient(160deg,var(--navy),var(--dark-card));}
+    .course-hero::after{content:'';position:absolute;bottom:-30px;right:-30px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04);}
+    .hero-inner{position:relative;z-index:1;max-width:780px;}
+    .hero-h1{font-family:'Rajdhani',sans-serif;font-size:clamp(1.5rem,6vw,2.6rem);font-weight:700;color:var(--white);letter-spacing:1px;line-height:1.1;text-transform:uppercase;}
+    .hero-rainbow{height:4px;width:200px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));margin-top:14px;}
+
+    /* ── STICKY TABS ── */
+    .sticky-tabs{display:flex;background:var(--grey-tab);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:50;}
+    .s-tab{padding:15px 22px;font-weight:600;font-size:.92rem;cursor:pointer;border-bottom:3px solid transparent;color:var(--sub);transition:color .2s,border-color .2s;white-space:nowrap;}
+    .s-tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+
+    /* ── TAB PANELS ── */
+    .tab-panel{display:none;padding:28px 20px 56px;max-width:780px;margin:0 auto;}
+    .tab-panel.active{display:block;}
+
+    /* ── SCHOOL INTRO ── */
+    .school-intro{margin-bottom:32px;}
+    .school-intro h2{font-family:'Rajdhani',sans-serif;font-size:clamp(.95rem,3.5vw,1.3rem);font-weight:700;color:var(--navy);text-transform:uppercase;margin-bottom:10px;}
+    .school-intro p{color:var(--sub);line-height:1.8;font-size:.98rem;text-align:justify;}
+
+    /* ── PROGRAMS ── */
+    .prog-heading{font-family:'Rajdhani',sans-serif;font-size:clamp(1.5rem,5vw,2.1rem);font-weight:700;color:var(--navy);margin-bottom:6px;}
+    .prog-subbar{height:4px;width:100px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));margin-bottom:22px;}
+    .prog-card{background:var(--grey-lt);border-radius:14px;border:2px solid var(--border);margin-bottom:14px;overflow:hidden;transition:border-color .2s;}
+    .prog-card.p-pink{border-left:4px solid var(--accent-1);}
+    .prog-card.p-gold{border-left:4px solid var(--accent-2);}
+    .prog-card.p-cyan{border-left:4px solid var(--accent-3);}
+    .prog-card.p-blue{border-left:4px solid var(--accent-4);}
+    .prog-card.p-green{border-left:4px solid var(--accent-5);}
+    .prog-card:hover{border-color:var(--navy);}
+    .prog-card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;gap:12px;cursor:pointer;}
+    .prog-card-name{font-weight:700;font-size:1rem;color:var(--navy);line-height:1.35;}
+    .prog-chevron{font-size:.9rem;color:var(--sub);transition:transform .25s;flex-shrink:0;}
+    .prog-card.open .prog-chevron{transform:rotate(180deg);}
+    .prog-card-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+    .prog-card.open .prog-card-body{max-height:400px;}
+    .prog-card-body-inner{padding:0 20px 20px;}
+    .prog-card-body-inner p{color:var(--sub);font-size:.92rem;line-height:1.7;margin-bottom:14px;}
+    .learn-more-btn{display:inline-block;background:var(--navy);color:var(--white);padding:10px 24px;border-radius:8px;font-weight:700;font-size:.9rem;letter-spacing:.5px;cursor:pointer;border:none;transition:background .2s;}
+    .learn-more-btn:hover{background:var(--navy-mid);}
+
+    /* ── CTA CARD ── */
+    .cta-card{background:var(--dark-card);border-radius:16px;padding:36px 26px;margin:36px 0;position:relative;overflow:hidden;}
+    .cta-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.04);}
+    .cta-icon-svg{font-size:2.8rem;margin-bottom:14px;display:block;}
+    .cta-card h3{font-family:'Rajdhani',sans-serif;font-size:clamp(1.5rem,5vw,2rem);font-weight:700;color:var(--white);text-transform:uppercase;line-height:1.15;margin-bottom:10px;}
+    .cta-rainbow{height:4px;width:140px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));margin-bottom:22px;}
+    .cta-btns{display:flex;flex-direction:column;gap:12px;max-width:340px;}
+    .cta-btn-outline{background:transparent;border:2px solid var(--white);color:var(--white);padding:13px 20px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .2s,color .2s;}
+    .cta-btn-outline:hover{background:var(--white);color:var(--navy);}
+    .cta-btn-solid{background:var(--white);border:2px solid var(--white);color:var(--navy);padding:13px 20px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .2s;}
+    .cta-btn-solid:hover{background:#e8ecf4;}
+
+    /* ── DISCLAIMER ── */
+    .disclaimer{font-style:italic;font-size:.8rem;color:#7a8aaa;line-height:1.65;padding:18px 0;border-top:1px solid var(--border);margin-top:12px;}
+
+    /* ── FOOTER ACCORDIONS ── */
+    .footer-acc{border-top:1.5px solid var(--border);margin-top:28px;}
+    .footer-acc-item{border-bottom:1.5px solid var(--border);}
+    .footer-acc-header{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;cursor:pointer;background:var(--grey-card);transition:background .15s;}
+    .footer-acc-header:hover{background:var(--grey-lt);}
+    .footer-acc-title{font-size:1rem;font-weight:600;color:var(--navy);}
+    .footer-acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+    .footer-acc-item.open .footer-acc-body{max-height:500px;}
+    .footer-acc-body-inner{padding:12px 20px 18px;font-size:.9rem;color:var(--sub);line-height:1.7;}
+
+    /* ── ENQUIRY FORM (tab panel) ── */
+    .enq-heading{font-family:'Rajdhani',sans-serif;font-size:clamp(1.6rem,5vw,2.1rem);font-weight:700;color:var(--navy);margin-bottom:6px;}
+    .enq-bar{height:4px;width:100px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));margin-bottom:26px;}
+    .enq-form-box{background:var(--grey-card);border-radius:16px;padding:26px 20px;border:1.5px solid var(--border);}
+    .enq-field{margin-bottom:18px;}
+    .enq-field label{display:block;font-size:.87rem;color:var(--sub);margin-bottom:5px;}
+    .enq-field label span{color:#e53935;}
+    .enq-field input,.enq-field select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:inherit;font-size:.94rem;color:var(--navy);background:var(--white);outline:none;transition:border-color .2s;}
+    .enq-field input:focus,.enq-field select:focus{border-color:var(--navy);}
+    .enq-check{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+    .enq-check input[type=checkbox]{width:20px;height:20px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
+    .enq-check label{font-size:.9rem;color:var(--sub);}
+    .enq-check a{color:var(--navy);text-decoration:underline;}
+    .call-btn{background:var(--navy);color:var(--white);border:none;padding:13px 36px;border-radius:10px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:background .2s;}
+    .call-btn:hover{background:var(--navy-mid);}
+
+    /* ── COURSE DETAIL PAGE ── */
+    #pg-course{background:var(--grey-bg);}
+    .cd-title-block{margin-bottom:24px;}
+    .cd-title-block h2{font-family:'Rajdhani',sans-serif;font-size:clamp(1.2rem,4vw,1.8rem);font-weight:700;color:var(--navy);margin-bottom:8px;}
+    .cd-title-bar{height:4px;width:100%;max-width:380px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));}
+
+    /* ── ACCORDIONS ── */
+    .accordion{margin-bottom:10px;}
+    .accordion-header{background:var(--grey-card);border-radius:12px;padding:17px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border:1.5px solid var(--border);transition:border-color .2s,background .2s;}
+    .accordion-header:hover{border-color:var(--navy);background:var(--grey-lt);}
+    .accordion-title{font-weight:700;font-size:.97rem;color:var(--navy);}
+    .accordion-chevron{color:var(--sub);transition:transform .25s;font-size:.9rem;}
+    .accordion.open .accordion-chevron{transform:rotate(180deg);}
+    .accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+    .accordion.open .accordion-body{max-height:800px;}
+    .accordion-body-inner{padding:14px 20px 18px;background:var(--white);border:1.5px solid var(--border);border-top:none;border-radius:0 0 12px 12px;font-size:.92rem;color:var(--sub);line-height:1.75;}
+
+    /* ── FURTHER INFO BOX ── */
+    .further-info{background:var(--grey-card);border-radius:14px;border:1.5px solid var(--border);padding:20px;margin:24px 0 8px;}
+    .further-info h4{font-weight:700;font-size:.97rem;color:var(--navy);margin-bottom:12px;}
+    .further-link{display:block;padding:9px 0;border-bottom:1px solid var(--border);color:var(--sub);font-size:.93rem;cursor:pointer;transition:color .2s;}
+    .further-link:last-child{border-bottom:none;}
+    .further-link:hover{color:var(--navy);}
+
+    /* ── ENQUIRY POPUP MODAL ── */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,18,40,.55);z-index:200;align-items:flex-end;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    @media(min-width:520px){.modal-overlay{align-items:center;}}
+    .modal-box{background:var(--white);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:28px 22px 36px;max-height:92vh;overflow-y:auto;animation:slideModal .3s ease;}
+    @media(min-width:520px){.modal-box{border-radius:20px;}}
+    @keyframes slideModal{from{transform:translateY(60px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+    .modal-title{font-family:'Rajdhani',sans-serif;font-size:1.6rem;font-weight:700;color:var(--navy);}
+    .modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--sub);line-height:1;padding:4px 8px;border-radius:6px;transition:background .15s;}
+    .modal-close:hover{background:var(--grey-card);}
+    .modal-bar{height:4px;width:100px;border-radius:3px;background:linear-gradient(90deg,var(--accent-2),var(--accent-1),#9b4dca,var(--accent-3));margin-bottom:22px;}
+
+    /* ── STEP LIST (How to Apply) ── */
+    .step-list{list-style:none;counter-reset:steps;}
+    .step-list li{counter-increment:steps;display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+    .step-list li::before{content:counter(steps);min-width:26px;height:26px;border-radius:50%;background:var(--navy);color:var(--white);font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+    /* responsive */
+    @media(min-width:640px){
+      .dept-grid{grid-template-columns:1fr 1fr;max-width:900px;}
+      #pg-depts{padding:72px 40px 88px;}
+      .cta-btns{flex-direction:row;}
+    }
+    @media(min-width:1024px){
+      #pg-depts{padding-left:60px;padding-right:60px;}
+      .tab-panel{padding-left:40px;padding-right:40px;}
+      .dept-grid{max-width:1100px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════ PAGE 1 – DEPARTMENTS LIST ═══════ -->
+<section id="pg-depts" class="page active">
+  <div class="dept-heading-wrap">
+    <h2>Our Departments</h2>
+    <div class="rainbow-bar"></div>
+  </div>
+  <div class="dept-grid">
+    <div class="dept-card" data-a="gold" onclick="openDept('business')">
+      <div class="dc-body"><div class="dc-icon">💼</div><div class="dc-label">Business</div></div>
+      <span class="dc-arrow">&#8594;</span>
+    </div>
+    <div class="dept-card" data-a="cyan" onclick="openDept('compapp')">
+      <div class="dc-body"><div class="dc-icon">🖥️</div><div class="dc-label">Computer Applications</div></div>
+      <span class="dc-arrow">&#8594;</span>
+    </div>
+    <div class="dept-card" data-a="blue" onclick="openDept('science')">
+      <div class="dc-body"><div class="dc-icon">🔬</div><div class="dc-label">Science</div></div>
+      <span class="dc-arrow">&#8594;</span>
+    </div>
+    <div class="dept-card" data-a="green" onclick="openDept('commerce')">
+      <div class="dc-body"><div class="dc-icon">📊</div><div class="dc-label">Commerce</div></div>
+      <span class="dc-arrow">&#8594;</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PAGE 2 – DEPARTMENT DETAIL ═══════ -->
+<section id="pg-dept" class="page">
+  <button class="back-btn" onclick="goTo('depts')">&#8592; Back</button>
+
+  <div class="dept-hero">
+    <div class="hero-inner">
+      <h1 class="hero-h1" id="dh-title"></h1>
+      <div class="hero-rainbow"></div>
+    </div>
+  </div>
+
+  <div class="sticky-tabs">
+    <div class="s-tab active" id="dtab-cd" onclick="switchPanel('d','cd')">Course Details</div>
+    <div class="s-tab" id="dtab-enq" onclick="switchPanel('d','enq')">Enquiry Form</div>
+  </div>
+
+  <!-- Course Details panel -->
+  <div id="dpanel-cd" class="tab-panel active">
+    <div class="school-intro">
+      <h2 id="si-headline"></h2>
+      <p id="si-desc"></p>
+    </div>
+    <div class="prog-heading">Programs</div>
+    <div class="prog-subbar"></div>
+    <div id="prog-list"></div>
+
+    <div class="cta-card">
+      <span class="cta-icon-svg">👨‍🎓</span>
+      <h3>Take the first step towards your career</h3>
+      <div class="cta-rainbow"></div>
+      <div class="cta-btns">
+        <button class="cta-btn-outline" onclick="switchPanel('d','enq')">TALK TO OUR COUNSELLORS</button>
+        <button class="cta-btn-solid" onclick="openModal()">APPLY NOW</button>
+      </div>
+    </div>
+
+    <p class="disclaimer">*All programs listed here are subject to approval of the Academic Council. Best PU and Degree College reserves the right to introduce/discontinue/modify new/existing programs at its sole discretion, without prior intimation to any party.</p>
+
+    <div class="footer-acc">
+      <div class="footer-acc-item">
+        <div class="footer-acc-header" onclick="toggleFA(this)"><span class="footer-acc-title">Admissions</span><span>&#8964;</span></div>
+        <div class="footer-acc-body"><div class="footer-acc-body-inner">For admission queries, please visit our admissions office or fill the Enquiry Form on this page. Our admissions team is available Monday to Saturday, 9 AM – 5 PM.</div></div>
+      </div>
+      <div class="footer-acc-item">
+        <div class="footer-acc-header" onclick="toggleFA(this)"><span class="footer-acc-title">Aspiring Students</span><span>&#8964;</span></div>
+        <div class="footer-acc-body"><div class="footer-acc-body-inner">We welcome students who are passionate about their chosen field. Explore our programs and reach out to a counsellor to find the best fit for your goals and career aspirations.</div></div>
+      </div>
+      <div class="footer-acc-item">
+        <div class="footer-acc-header" onclick="toggleFA(this)"><span class="footer-acc-title">Other Links</span><span>&#8964;</span></div>
+        <div class="footer-acc-body"><div class="footer-acc-body-inner">Fee Structure &bull; Scholarship Info &bull; Contact Us</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enquiry Form panel -->
+  <div id="dpanel-enq" class="tab-panel">
+    <div class="enq-heading">Enquiry Form</div>
+    <div class="enq-bar"></div>
+    <div class="enq-form-box">
+      <div class="enq-field"><label><span>* </span>First Name</label><input type="text"/></div>
+      <div class="enq-field"><label><span>* </span>Last Name</label><input type="text"/></div>
+      <div class="enq-field"><label><span>* </span>Email Address</label><input type="email"/></div>
+      <div class="enq-field"><label><span>* </span>Mobile Number</label><input type="tel" placeholder="+91"/></div>
+      <div class="enq-field"><label><span>* </span>Course Type</label><select><option value="">-- None --</option><option>Undergraduate</option><option>PUC (11th &amp; 12th)</option></select></div>
+      <div class="enq-field"><label><span>* </span>Select Course</label><select><option value="">-- None --</option></select></div>
+      <div class="enq-check"><input type="checkbox" id="tc1" checked/><label for="tc1">I accept <a href="#">terms &amp; conditions</a></label></div>
+      <button class="call-btn">Call Me</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ PAGE 3 – COURSE / LEARN MORE ═══════ -->
+<section id="pg-course" class="page">
+  <button class="back-btn" onclick="goTo('dept')">&#8592; Back</button>
+
+  <div class="course-hero">
+    <div class="hero-inner">
+      <h1 class="hero-h1" id="ch-title"></h1>
+      <div class="hero-rainbow"></div>
+    </div>
+  </div>
+
+  <div class="sticky-tabs">
+    <div class="s-tab active" id="ctab-cd" onclick="switchPanel('c','cd')">Course Details</div>
+    <div class="s-tab" id="ctab-enq" onclick="switchPanel('c','enq')">Enquiry Form</div>
+  </div>
+
+  <!-- Course Details panel -->
+  <div id="cpanel-cd" class="tab-panel active">
+    <div class="cd-title-block">
+      <h2 id="cd-full-title"></h2>
+      <div class="cd-title-bar"></div>
+    </div>
+
+    <div class="accordion" id="acc-pd">
+      <div class="accordion-header" onclick="toggleAcc('acc-pd')"><span class="accordion-title">Program Details</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-pd"></div></div>
+    </div>
+    <div class="accordion" id="acc-ph">
+      <div class="accordion-header" onclick="toggleAcc('acc-ph')"><span class="accordion-title">Program Highlights</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-ph"></div></div>
+    </div>
+    <div class="accordion" id="acc-it">
+      <div class="accordion-header" onclick="toggleAcc('acc-it')"><span class="accordion-title">Industry Trends &amp; Career Opportunities</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-it"></div></div>
+    </div>
+    <div class="accordion" id="acc-fs">
+      <div class="accordion-header" onclick="toggleAcc('acc-fs')"><span class="accordion-title">Fee Structure</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-fs"></div></div>
+    </div>
+    <div class="accordion" id="acc-cu">
+      <div class="accordion-header" onclick="toggleAcc('acc-cu')"><span class="accordion-title">Curriculum</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-cu"></div></div>
+    </div>
+    <div class="accordion" id="acc-el">
+      <div class="accordion-header" onclick="toggleAcc('acc-el')"><span class="accordion-title">Eligibility</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-el"></div></div>
+    </div>
+    <div class="accordion" id="acc-sc">
+      <div class="accordion-header" onclick="toggleAcc('acc-sc')"><span class="accordion-title">Selection Criteria</span><span class="accordion-chevron">&#8964;</span></div>
+      <div class="accordion-body"><div class="accordion-body-inner" id="acd-sc"></div></div>
+    </div>
+
+    <div class="further-info">
+      <h4>Further Information</h4>
+      <span class="further-link" onclick="openFurtherModal('apply')">How To Apply</span>
+      <span class="further-link" onclick="openFurtherModal('admission')">Admission Process</span>
+      <span class="further-link" onclick="switchPanel('c','enq')">Contact Us</span>
+    </div>
+
+    <div class="cta-card">
+      <span class="cta-icon-svg">👨‍🎓</span>
+      <h3>Take the first step towards your career</h3>
+      <div class="cta-rainbow"></div>
+      <div class="cta-btns">
+        <button class="cta-btn-outline" onclick="switchPanel('c','enq')">TALK TO OUR COUNSELLORS</button>
+        <button class="cta-btn-solid" onclick="openModal()">APPLY NOW</button>
+      </div>
+    </div>
+
+    <p class="disclaimer">*All programs listed here are subject to approval of the Academic Council. Best PU and Degree College reserves the right to introduce/discontinue/modify new/existing programs at its sole discretion, without prior intimation to any party.</p>
+
+    <div class="footer-acc">
+      <div class="footer-acc-item">
+        <div class="footer-acc-header" onclick="toggleFA(this)"><span class="footer-acc-title">Admissions</span><span>&#8964;</span></div>
+        <div class="footer-acc-body"><div class="footer-acc-body-inner">For admission queries, please visit our admissions office or fill the Enquiry Form on this page. Our team is available Monday to Saturday, 9 AM – 5 PM.</div></div>
+      </div>
+      <div class="footer-acc-item">
+        <div class="footer-acc-header" onclick="toggleFA(this)"><span class="footer-acc-title">Aspiring Students</span><span>&#8964;</span></div>
+        <div class="footer-acc-body"><div class="footer-acc-body-inner">We welcome students who are passionate about their chosen field. Reach out to a counsellor to find the best fit for your goals and career aspirations.</div></div>
+      </div>
+      <div class="footer-acc-item">
+        <div class="footer-acc-header" onclick="toggleFA(this)"><span class="footer-acc-title">Other Links</span><span>&#8964;</span></div>
+        <div class="footer-acc-body"><div class="footer-acc-body-inner">Fee Structure &bull; Scholarship Info &bull; Contact Us</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enquiry Form panel -->
+  <div id="cpanel-enq" class="tab-panel">
+    <div class="enq-heading">Enquiry Form</div>
+    <div class="enq-bar"></div>
+    <div class="enq-form-box">
+      <div class="enq-field"><label><span>* </span>First Name</label><input type="text"/></div>
+      <div class="enq-field"><label><span>* </span>Last Name</label><input type="text"/></div>
+      <div class="enq-field"><label><span>* </span>Email Address</label><input type="email"/></div>
+      <div class="enq-field"><label><span>* </span>Mobile Number</label><input type="tel" placeholder="+91"/></div>
+      <div class="enq-field"><label><span>* </span>Course Type</label><select><option value="">-- None --</option><option>Undergraduate</option><option>PUC (11th &amp; 12th)</option></select></div>
+      <div class="enq-field"><label><span>* </span>Select Course</label><select><option value="">-- None --</option></select></div>
+      <div class="enq-check"><input type="checkbox" id="tc2" checked/><label for="tc2">I accept <a href="#">terms &amp; conditions</a></label></div>
+      <button class="call-btn">Call Me</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ APPLY NOW POPUP MODAL ═══════ -->
+<div class="modal-overlay" id="applyModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Apply Now</span>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-bar"></div>
+    <div class="enq-form-box">
+      <div class="enq-field"><label><span>* </span>First Name</label><input type="text"/></div>
+      <div class="enq-field"><label><span>* </span>Last Name</label><input type="text"/></div>
+      <div class="enq-field"><label><span>* </span>Email Address</label><input type="email"/></div>
+      <div class="enq-field"><label><span>* </span>Mobile Number</label><input type="tel" placeholder="+91"/></div>
+      <div class="enq-field"><label><span>* </span>Course Type</label><select><option value="">-- None --</option><option>Undergraduate</option><option>PUC (11th &amp; 12th)</option></select></div>
+      <div class="enq-field"><label><span>* </span>Select Course</label><select><option value="">-- None --</option></select></div>
+      <div class="enq-check"><input type="checkbox" id="tc3" checked/><label for="tc3">I accept <a href="#">terms &amp; conditions</a></label></div>
+      <button class="call-btn" onclick="closeModal()">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ FURTHER INFO MODALS (How to Apply / Admission Process) ═══════ -->
+<div class="modal-overlay" id="furtherModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="fm-title"></span>
+      <button class="modal-close" onclick="closeFurtherModal()">&#10005;</button>
+    </div>
+    <div class="modal-bar"></div>
+    <div id="fm-body" style="font-size:.95rem;color:var(--sub);line-height:1.75;"></div>
+  </div>
+</div>
+
+<script>
+/* ── DATA ── */
+const DEPTS = {
+  business: {
+    heroTitle: 'School Of Business',
+    siHeadline: 'B-SCHOOL FOR THE DISRUPTIVE WORLD',
+    siDesc: `In today's disruptive business landscape, leaders must move beyond traditional thinking and embrace rapid change, technological shifts, and evolving global priorities. At Best PU and Degree College, we integrate academic rigour with industry-driven insights and an innovation-first approach to prepare students for this new reality. Our programs cultivate strategic agility, digital fluency, and responsible leadership — equipping future managers to not just navigate disruption, but to lead it.`,
+    programs: [
+      { name:'B.Com', accent:'p-gold', brief:'A comprehensive undergraduate commerce program covering accounting, taxation, business law, and finance.', key:'bcom' }
+    ]
+  },
+  compapp: {
+    heroTitle: 'School Of Computer Applications',
+    siHeadline: 'SHAPING THE FUTURE OF INTELLIGENCE',
+    siDesc: `The School of Computer Applications stands at the forefront of a profound technological shift — where artificial intelligence is redefining industries, economies, and human potential. As an AI-first institution, we offer a distinctive academic environment that blends intellectual rigour, technological depth, and real-world relevance. Here, education is not merely about acquiring knowledge — it is about cultivating the ability to create, innovate, and lead in an increasingly intelligent world.`,
+    programs: [
+      { name:'BCA', accent:'p-cyan', brief:'Bachelor of Computer Applications — a 3-year program covering programming, databases, networking, and software development.', key:'bca' }
+    ]
+  },
+  science: {
+    heroTitle: 'School Of Science',
+    siHeadline: 'HEALTH SCIENCE AND TECHNOLOGY',
+    siDesc: `At Best PU and Degree College, the School of Science bridges foundational knowledge with cutting-edge research. Our science programs are designed to cultivate analytical thinking, laboratory expertise, and a deep understanding of the natural world. We prepare students for careers in medicine, engineering, research, and beyond — through a curriculum that blends theory with hands-on practice.`,
+    programs: [
+      { name:'PCMB + NEET + CET', accent:'p-blue',  brief:'Physics, Chemistry, Maths & Biology with integrated NEET and CET entrance coaching.', key:'pcmb_neet' },
+      { name:'PCMB + JEE + CET',  accent:'p-pink',  brief:'Physics, Chemistry, Maths & Biology with integrated JEE and CET entrance coaching.', key:'pcmb_jee'  },
+      { name:'PCMC + JEE + CET',  accent:'p-gold',  brief:'Physics, Chemistry, Maths & Computer Science with JEE and CET entrance coaching.', key:'pcmc_jee'  }
+    ]
+  },
+  commerce: {
+    heroTitle: 'School Of Commerce',
+    siHeadline: 'BUSINESS WORLD',
+    siDesc: `At Best PU and Degree College, the School of Commerce prepares students for a dynamic and interconnected global economy. Our curriculum goes beyond textbooks to develop financial literacy, entrepreneurial thinking, and business acumen. Guided by experienced faculty and industry mentors, our students are equipped to excel in accounting, finance, taxation, and management — building careers that make a real impact.`,
+    programs: [
+      { name:'EBACS + CA Foundation', accent:'p-green', brief:'Economics, Business Studies, Accountancy, Computer & Statistics with integrated CA Foundation preparation.', key:'ebacs_ca' }
+    ]
+  }
+};
+
+const HOW_TO_APPLY = `
+<p style="margin-bottom:16px;font-size:.95rem;color:var(--sub);">Follow these simple steps to fill the <strong>Enquiry Form</strong> pop-up:</p>
+<ol class="step-list">
+  <li>Tap the <strong>Apply Now</strong> button on any course page — the Enquiry Form will open as a pop-up on your screen.</li>
+  <li>Enter your <strong>First Name</strong> and <strong>Last Name</strong> clearly and correctly.</li>
+  <li>Provide a valid <strong>Email Address</strong> — our team will use this to send confirmation details.</li>
+  <li>Enter your <strong>Mobile Number</strong> with country code (e.g. <em>+91</em> for India) — a counsellor will call you on this number.</li>
+  <li>Select the <strong>Course Type</strong> from the dropdown — choose either <em>Undergraduate</em> or <em>PUC (11th &amp; 12th)</em>.</li>
+  <li>Choose the <strong>Course</strong> you are interested in from the second dropdown list.</li>
+  <li>Tick the <strong>Terms &amp; Conditions</strong> checkbox to confirm you agree to the terms.</li>
+  <li>Click <strong>Submit Application</strong> — our admissions counsellor will contact you within 24 hours.</li>
+</ol>
+<p style="margin-top:14px;font-size:.88rem;color:#7a8aaa;">You can also walk in to our admissions office directly — Monday to Saturday, 9 AM to 5 PM.</p>`;
+
+const ADMISSION_PROCESS = `
+<p style="margin-bottom:16px;font-size:.95rem;color:var(--sub);">To begin your admission, please contact our <strong>Admissions Office</strong> or speak to one of our <strong>Counsellors</strong> directly:</p>
+<ol class="step-list">
+  <li><strong>Visit the Admissions Office</strong> — Come to the college campus Monday to Saturday, 9 AM to 5 PM. Our admissions team will guide you through the entire process.</li>
+  <li><strong>Meet a Counsellor</strong> — Our academic counsellors are available to help you select the right program based on your academic background, interests, and career goals. No appointment needed — walk in anytime during office hours.</li>
+  <li><strong>Fill the Enquiry Form</strong> — You can also tap <em>Apply Now</em> on this page to fill our online Enquiry Form. A counsellor will call you back within 24 hours.</li>
+  <li><strong>Submit Your Documents</strong> — As advised by the counsellor, bring your 10th / SSLC mark sheet, passport-size photographs, and any other relevant certificates.</li>
+  <li><strong>Confirm Your Seat</strong> — Complete the fee payment at the accounts office once your application is reviewed and approved.</li>
+</ol>
+<p style="margin-top:14px;"><strong>📞 Contact our Admissions Office or Counsellors for any queries — we are here to help you every step of the way.</strong></p>`;
+
+const COURSES = {
+  bcom: {
+    tag:'B.Com', title:'BACHELOR OF COMMERCE (B.COM)', fullTitle:'B.Com – Bachelor of Commerce',
+    pd:'Duration: 3 Years | Degree: Bachelor of Commerce | Mode: Full-Time | Affiliation: State University',
+    ph:'• Industry-relevant curriculum\n• Expert faculty with commerce & industry experience\n• Workshops in accounting & taxation\n• Regular industry guest lectures\n• Strong alumni network',
+    it:'Commerce graduates are in demand across banking, finance, audit, e-commerce, and the public sector. Career paths include Chartered Accountant, Financial Analyst, Tax Consultant, Business Manager, and Entrepreneur.',
+    fs:'Fee details are available at the admissions office. Scholarships are available for meritorious students. Contact us for the latest fee structure.',
+    cu:'Sem 1–2: Financial Accounting, Business Communication, Business Law\nSem 3–4: Cost Accounting, Income Tax, Business Statistics\nSem 5–6: Auditing, Corporate Accounting, Electives',
+    el:'Candidates must have passed 10+2 (PUC) or equivalent with Commerce/Science/Arts from a recognised board.',
+    sc:'Selection is based on merit in 10+2. Candidates may be called for a counselling session. Admission is subject to document verification and seat availability.'
+  },
+  bca: {
+    tag:'BCA', title:'BACHELOR OF COMPUTER APPLICATIONS (BCA)', fullTitle:'BCA – Bachelor of Computer Applications',
+    pd:'Duration: 3 Years | Degree: BCA | Mode: Full-Time | Affiliation: State University',
+    ph:'• AI & data science integrated curriculum\n• Well-equipped computer labs\n• Industry project exposure\n• Coding bootcamps & hackathons\n• Career guidance & support',
+    it:'The IT industry is growing rapidly. BCA graduates are sought in software development, cloud computing, cybersecurity, and AI. Career options include Software Developer, System Analyst, and Database Administrator.',
+    fs:'Fee details available at the admissions office. Merit scholarships available. Contact us for the latest fee structure.',
+    cu:'Sem 1–2: Programming in C, Web Basics, Maths for Computing\nSem 3–4: Data Structures, DBMS, Operating Systems\nSem 5–6: Software Engineering, AI Fundamentals, Project Work',
+    el:'Candidates must have passed 10+2 (PUC) with Mathematics/Computer Science as one of the subjects from a recognised board.',
+    sc:'Selection based on merit in 10+2. Seats are limited. Early application is encouraged.'
+  },
+  pcmb_neet: {
+    tag:'PCMB + NEET + CET', title:'PCMB WITH NEET & CET COACHING', fullTitle:'PCMB – Physics, Chemistry, Maths & Biology (NEET + CET)',
+    pd:'Duration: 2 Years (PUC) | Stream: Science | Entrance: NEET & CET',
+    ph:'• Integrated NEET & CET coaching\n• Expert Biology & Chemistry faculty\n• Regular mock tests & analysis\n• Doubt-clearing sessions\n• Study material provided',
+    it:'NEET & CET qualified students can pursue MBBS, BDS, BAMS, B.Pharm, Nursing, and allied health sciences. India\'s healthcare sector is one of the fastest growing in the world.',
+    fs:'Fee details available at the admissions office. Scholarships for top scorers.',
+    cu:'Year 1: Physics, Chemistry, Maths, Biology (Board + Entrance Foundation)\nYear 2: Advanced Topics, Full-Length Mocks, Revision',
+    el:'Students who have passed SSLC / 10th with Science and Maths from a recognised board.',
+    sc:'Merit-based admission. Students may be called for a counselling session. Limited seats available.'
+  },
+  pcmb_jee: {
+    tag:'PCMB + JEE + CET', title:'PCMB WITH JEE & CET COACHING', fullTitle:'PCMB – Physics, Chemistry, Maths & Biology (JEE + CET)',
+    pd:'Duration: 2 Years (PUC) | Stream: Science | Entrance: JEE & CET',
+    ph:'• Integrated JEE & CET coaching\n• Problem-solving focused approach\n• Regular JEE-pattern tests\n• Expert faculty\n• Study material provided',
+    it:'JEE qualified students can pursue B.Tech/B.E. at NITs, IIITs, and top engineering colleges. Engineering continues to offer strong careers in IT, core engineering, and emerging tech.',
+    fs:'Fee details available at admissions office. Scholarships for merit students.',
+    cu:'Year 1: Physics, Chemistry, Maths, Biology (Board + Entrance)\nYear 2: Advanced Topics, JEE Mocks, Revision',
+    el:'Students who have passed SSLC / 10th with Science and Maths.',
+    sc:'Merit-based admission. Limited seats. Early application advised.'
+  },
+  pcmc_jee: {
+    tag:'PCMC + JEE + CET', title:'PCMC WITH JEE & CET COACHING', fullTitle:'PCMC – Physics, Chemistry, Maths & Computer Science (JEE + CET)',
+    pd:'Duration: 2 Years (PUC) | Stream: Science | Entrance: JEE & CET',
+    ph:'• Integrated JEE & CET coaching\n• Strong focus on Maths & Computer Science\n• Coding fundamentals included\n• Expert faculty\n• Regular assessments',
+    it:'PCMC students are well-positioned for engineering and IT careers. JEE + CET opens doors to top B.Tech programs in CS, IT, and Electronics.',
+    fs:'Fee details available at admissions office. Contact us for the latest fee structure.',
+    cu:'Year 1: Physics, Chemistry, Maths, Computer Science basics\nYear 2: Advanced JEE prep, Programming fundamentals, Full-length mocks',
+    el:'Students who have passed SSLC / 10th with Science and Maths.',
+    sc:'Merit-based admission. Limited seats.'
+  },
+  ebacs_ca: {
+    tag:'EBACS + CA Foundation', title:'EBACS WITH CA FOUNDATION COACHING', fullTitle:'EBACS – Economics, Business Studies, Accountancy, Computer & Statistics (CA Foundation)',
+    pd:'Duration: 2 Years (PUC) | Stream: Commerce | Entrance: CA Foundation',
+    ph:'• Integrated CA Foundation coaching\n• Strong accountancy & economics foundation\n• Regular CA-pattern mock tests\n• Expert commerce faculty\n• Study material provided',
+    it:'CA is one of India\'s most prestigious professional qualifications. EBACS students are strongly positioned to clear CA Foundation and pursue careers as Chartered Accountants, Financial Advisors, or CFOs.',
+    fs:'Fee details available at admissions office. Merit scholarships available.',
+    cu:'Year 1: Accountancy, Business Studies, Economics, Computer, Statistics\nYear 2: Advanced topics, CA Foundation coaching, Full-length mocks',
+    el:'Students who have passed SSLC / 10th from a recognised board.',
+    sc:'Merit-based admission. Limited seats. Apply early.'
+  }
+};
+
+/* ── NAVIGATION ── */
+function goTo(pg) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pg-' + pg).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ── PANEL SWITCHING ── */
+function switchPanel(ctx, which) {
+  const prefix = ctx === 'd' ? 'dpanel' : 'cpanel';
+  const tabPrefix = ctx === 'd' ? 'dtab' : 'ctab';
+  ['cd','enq'].forEach(t => {
+    document.getElementById(prefix+'-'+t).classList.toggle('active', t === which);
+    document.getElementById(tabPrefix+'-'+t).classList.toggle('active', t === which);
+  });
+  window.scrollTo(0, 0);
+}
+
+/* ── OPEN DEPT ── */
+function openDept(key) {
+  const d = DEPTS[key];
+  document.getElementById('dh-title').textContent     = d.heroTitle;
+  document.getElementById('si-headline').textContent  = d.siHeadline;
+  document.getElementById('si-desc').textContent      = d.siDesc;
+  switchPanel('d', 'cd');
+
+  const list = document.getElementById('prog-list');
+  list.innerHTML = '';
+  d.programs.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'prog-card ' + p.accent;
+    card.innerHTML = `
+      <div class="prog-card-header" onclick="toggleProg(this)">
+        <span class="prog-card-name">${p.name}</span>
+        <span class="prog-chevron">&#8964;</span>
+      </div>
+      <div class="prog-card-body">
+        <div class="prog-card-body-inner">
+          <p>${p.brief}</p>
+          <button class="learn-more-btn" onclick="event.stopPropagation();openCourse('${p.key}')">Learn More</button>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+  goTo('dept');
+}
+
+function toggleProg(hdr) { hdr.parentElement.classList.toggle('open'); }
+
+/* ── OPEN COURSE ── */
+function openCourse(key) {
+  const c = COURSES[key];
+  document.getElementById('ch-title').textContent       = c.title;
+  document.getElementById('cd-full-title').textContent  = c.fullTitle;
+  ['pd','ph','it','fs','cu','el','sc'].forEach(k => {
+    const el = document.getElementById('acd-'+k);
+    if (el) el.innerHTML = (c[k] || '').replace(/\n/g,'<br>');
+  });
+  document.querySelectorAll('#pg-course .accordion').forEach(a => a.classList.remove('open'));
+  switchPanel('c', 'cd');
+  goTo('course');
+}
+
+/* ── ACCORDIONS ── */
+function toggleAcc(id) { document.getElementById(id).classList.toggle('open'); }
+function toggleFA(hdr)  { hdr.parentElement.classList.toggle('open'); }
+
+/* ── APPLY NOW MODAL ── */
+function openModal() {
+  document.getElementById('applyModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('applyModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── FURTHER INFO MODAL ── */
+function openFurtherModal(type) {
+  const modal = document.getElementById('furtherModal');
+  if (type === 'apply') {
+    document.getElementById('fm-title').textContent = 'How To Apply';
+    document.getElementById('fm-body').innerHTML = HOW_TO_APPLY;
+  } else {
+    document.getElementById('fm-title').textContent = 'Admission Process';
+    document.getElementById('fm-body').innerHTML = ADMISSION_PROCESS;
+  }
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFurtherModal() {
+  document.getElementById('furtherModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* Close modal on overlay click */
+function handleOverlayClick(e) {
+  if (e.target === e.currentTarget) {
+    closeModal();
+    closeFurtherModal();
+  }
+}
+</script>
+</body>
+</html>
